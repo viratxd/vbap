@@ -1473,7 +1473,7 @@ def zip_downloader(model):
 with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
     with gr.Tabs():
         with gr.TabItem("Inference"):
-            gr.HTML("<h1>  Ilaria RVC 2.0 💖   </h1>")     
+            gr.HTML("<h1>  Ilaria RVC 💖   </h1>")     
             gr.HTML("<h10>   You can find voice models on AI Hub: https://discord.gg/aihub   </h10>")   
             gr.HTML("<h4>  Huggingface port by Ilaria of the Rejekt Easy GUI  </h4>")
 
