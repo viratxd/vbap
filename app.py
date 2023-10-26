@@ -1472,10 +1472,10 @@ def zip_downloader(model):
 
 with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
     with gr.Tabs():
-        with gr.TabItem("Inferenza"):
+        with gr.TabItem("Inference"):
             gr.HTML("<h1>  Ilaria RVC 2.0 💖   </h1>")     
-            gr.HTML("<h10>   Lista dei modelli a cura di Ilaria: https://rentry.org/modelli-italiani   </h10>")   
-            gr.HTML("<h4>  Sostieni Ilaria su Ko-Fi donando qualsiasi somma: https://ko-fi.com/ilariaowo  </h4>")
+            gr.HTML("<h10>   You can find voice models on AI Hub: https://discord.gg/aihub   </h10>")   
+            gr.HTML("<h4>  Huggingface port by Ilaria of the Rejekt Easy GUI  </h4>")
 
             # Inference Preset Row
             # with gr.Row():
@@ -1487,11 +1487,11 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
 
             # Other RVC stuff
             with gr.Row():
-                sid0 = gr.Dropdown(label="1.Scegli il modello.", choices=sorted(names), value=check_for_name())
-                refresh_button = gr.Button("Aggiorna", variant="primary")
+                sid0 = gr.Dropdown(label="1.Choose the model.", choices=sorted(names), value=check_for_name())
+                refresh_button = gr.Button("Refresh", variant="primary")
                 if check_for_name() != '':
                     get_vc(sorted(names)[0])
-                vc_transform0 = gr.Number(label="Pitch: 0 da uomo a uomo (o donna a donna); 12 da uomo a donna e -12 da donna a uomo", value=0)
+                vc_transform0 = gr.Number(label="Pitch: 0 from man to man (or woman to woman); 12 from man to woman and -12 from woman to man.", value=0)
                 #clean_button = gr.Button(i18n("卸载音色省显存"), variant="primary")
                 spk_item = gr.Slider(
                     minimum=0,
@@ -1508,22 +1508,22 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
                     inputs=[sid0],
                     outputs=[spk_item],
                 )
-                but0 = gr.Button("Converti", variant="primary")
+                but0 = gr.Button("Convert", variant="primary")
             with gr.Row():
                 with gr.Column():
                     with gr.Row():
-                        dropbox = gr.File(label="Inserisci il file audio e clicca il tasto aggiorna.")
+                        dropbox = gr.File(label="Drag your audio file and click refresh.")
                     with gr.Row():
-                        record_button=gr.Audio(source="microphone", label="Oppure registra dal microfono.", type="filepath")
+                        record_button=gr.Audio(source="microphone", label="Or you can use your microphone!", type="filepath")
                     with gr.Row():
                         input_audio0 = gr.Dropdown(
-                            label="2.Scegli l'audio.",
+                            label="2.Choose the audio file.",
                             value="./audios/Test_Audio.mp3",
                             choices=audio_files
                             )
                         dropbox.upload(fn=save_to_wav2, inputs=[dropbox], outputs=[input_audio0])
                         dropbox.upload(fn=change_choices2, inputs=[], outputs=[input_audio0])
-                        refresh_button2 = gr.Button("Aggiorna", variant="primary", size='sm')
+                        refresh_button2 = gr.Button("Refresh", variant="primary", size='sm')
                         record_button.change(fn=save_to_wav, inputs=[record_button], outputs=[input_audio0])
                         record_button.change(fn=change_choices2, inputs=[], outputs=[input_audio0])
                     with gr.Row():
@@ -1552,9 +1552,9 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
                                 animate_button = gr.Button('Animate')
 
                 with gr.Column():
-                    with gr.Accordion("Impostazioni Index", open=False):
+                    with gr.Accordion("Index Settings", open=False):
                         file_index1 = gr.Dropdown(
-                            label="3. Scegli il file index (nel caso non sia stato fatto in automatico.)",
+                            label="3. Choose the index file (in case it wasn't automatically found.)",
                             choices=get_indexes(),
                             value=get_index(),
                             interactive=True,
@@ -1576,14 +1576,14 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
                             interactive=True,
                             )
                     vc_output2 = gr.Audio(
-                        label="Risultato finale (Click sui tre puntini per scaricare l'audio)",
+                        label="Final Result! (Click on the three dots to download the audio)",
                         type='filepath',
                         interactive=False,
                     )
                     animate_button.click(fn=mouth, inputs=[size, face, vc_output2, faces], outputs=[animation, preview])
                     with gr.Accordion("Opzioni avanzate", open=False):
                         f0method0 = gr.Radio(
-                            label="Opzionale: Cambia il meteodo di estrazione del pitch.\nIlaria consiglia di lasciare tutto così com'è.\nrmvpe è il miglior metodo, in caso di problemi potete provare anche mangio-crepe.",
+                            label="Optional: Change the Pitch Extraction Algorithm. Extraction methods are sorted from 'worst quality' to 'best quality'. If you don't know what you're doing, leave rmvpe.",
                             choices=["pm", "dio", "crepe-tiny", "mangio-crepe-tiny", "crepe", "harvest", "mangio-crepe", "rmvpe"], # Fork Feature. Add Crepe-Tiny
                             value="rmvpe",
                             interactive=True,
@@ -1821,19 +1821,19 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
                         [vc_output3],
                     )
                     but1.click(fn=lambda: easy_uploader.clear())
-        with gr.TabItem("Scarica modelli"):
+        with gr.TabItem("Download Voice Models"):
             with gr.Row():
-                url=gr.Textbox(label="Inserisci l'URL del modello:")
+                url=gr.Textbox(label="Huggingface Link:")
             with gr.Row():
-                model = gr.Textbox(label="Nome del modello (senza spazi):")
-                download_button=gr.Button("Scarica")
+                model = gr.Textbox(label="Name of the model (without spaces):")
+                download_button=gr.Button("Download")
             with gr.Row():
                 status_bar=gr.Textbox(label="")
                 download_button.click(fn=download_from_url, inputs=[url, model], outputs=[status_bar])
             with gr.Row():
                 gr.Markdown(
                 """
-                Made with 💖 by Ilaria | Sostieni Ilaria su [Ko-Fi](https://ko-fi.com/ilariaowo)
+                Made with 💖 by Ilaria | Support her on [Ko-Fi](https://ko-fi.com/ilariaowo)
                 """
                 )
 
