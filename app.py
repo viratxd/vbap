@@ -1585,7 +1585,7 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
                         f0method0 = gr.Radio(
                             label="Optional: Change the Pitch Extraction Algorithm. Extraction methods are sorted from 'worst quality' to 'best quality'. If you don't know what you're doing, leave rmvpe.",
                             choices=["pm", "dio", "crepe-tiny", "mangio-crepe-tiny", "crepe", "harvest", "mangio-crepe", "rmvpe"], # Fork Feature. Add Crepe-Tiny
-                            value="rmvpe",
+                            value="pm",
                             interactive=True,
                         )
                         
