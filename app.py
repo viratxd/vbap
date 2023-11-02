@@ -1475,7 +1475,7 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
         with gr.TabItem("Inference"):
             gr.HTML("<h1>  Ilaria RVC 💖   </h1>")     
             gr.HTML("<h10>   You can find voice models on AI Hub: https://discord.gg/aihub   </h10>")   
-            gr.HTML("<h4>  Huggingface port by Ilaria of the Rejekt Easy GUI  </h4>")
+            gr.HTML("<h4>  Huggingface port by Ilaria of the Rejekt Easy GUI ⚠️ IM AWARE OF THE RMVPE BUG, FOR THE MOMENT THE DEFAULT IS PM ⚠️ </h4>")
 
             # Inference Preset Row
             # with gr.Row():
