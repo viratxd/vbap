@@ -1475,7 +1475,7 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
         with gr.TabItem("Inference"):
             gr.HTML("<h1>  Ilaria RVC 💖   </h1>")     
             gr.HTML("<h10>   You can find voice models on AI Hub: https://discord.gg/aihub   </h10>")   
-            gr.HTML("<h4>  Huggingface port by Ilaria of the Rejekt Easy GUI ⚠️ IM AWARE OF THE RMVPE BUG, FOR THE MOMENT THE DEFAULT IS PM ⚠️ </h4>")
+            gr.HTML("<h4>  Huggingface port by Ilaria of the Rejekt Easy GUI </h4>")
 
             # Inference Preset Row
             # with gr.Row():
@@ -1585,7 +1585,7 @@ with gr.Blocks(theme=gr.themes.Base (), title='Mangio-RVC-Web 💻') as app:
                         f0method0 = gr.Radio(
                             label="Optional: Change the Pitch Extraction Algorithm. Extraction methods are sorted from 'worst quality' to 'best quality'. If you don't know what you're doing, leave rmvpe.",
                             choices=["pm", "dio", "crepe-tiny", "mangio-crepe-tiny", "crepe", "harvest", "mangio-crepe", "rmvpe"], # Fork Feature. Add Crepe-Tiny
-                            value="pm",
+                            value="rmvpe",
                             interactive=True,
                         )
                         
