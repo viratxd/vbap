@@ -1360,7 +1360,7 @@ def download_from_url(url, model):
         shutil.rmtree("unzips")
         return "Model downloaded, you can go back to the inference page!"
     except:
-        return "Errore, il modello non si è scaricato correttamente."
+        return "ERROR - The download failed. Check if the link is valid."
 def success_message(face):
     return f'{face.name} has been uploaded.', 'None'
 def mouth(size, face, voice, faces):
