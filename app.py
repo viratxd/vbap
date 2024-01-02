@@ -63,7 +63,7 @@ def download_models():
         
     # Download rmvpe model if not present
     if not os.path.isfile('./rmvpe.pt'):
-        response = requests.get('https://drive.usercontent.google.com/download?id=1Hkn4kNuVFRCNQwyxQFRtmzmMBGpQxptI&export=download&authuser=0&confirm=t&uuid=0b3a40de-465b-4c65-8c41-135b0b45c3f7&at=APZUnTV3lA3LnyTbeuduura6Dmi2:1693724254058')
+        response = requests.get('https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/rmvpe.pt?download=true')
 
         if response.status_code == 200:
             with open('./rmvpe.pt', 'wb') as f:
