@@ -21,3 +21,4 @@ gdown
 onnxruntime
 pyngrok==4.1.12
 torch
+gdown @ git+https://github.com/IAHispano/gdown.git
