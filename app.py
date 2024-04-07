@@ -1485,7 +1485,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
     with gr.Tabs():
         with gr.TabItem("Inference"):
             gr.HTML("<h1>  Ilaria RVC 💖   </h1>")     
-            gr.HTML("<h10>   You can find voice models on AI Hub: https://discord.gg/aihub   </h10>")   
+            gr.HTML("<h10>   You can find voice models on <a href="https://discord.gg/aihub"> AI Hub </a>  </h10>")   
             gr.HTML("<h4>  Huggingface port by Ilaria of the Rejekt Easy GUI </h4>")
 
             # Inference Preset Row
