@@ -1,2 +1,5 @@
 ilariasuitewallpaper.jpg filter=lfs diff=lfs merge=lfs -text
 ilariaaisuite.png filter=lfs diff=lfs merge=lfs -text
+audios/20240511-032226.wav filter=lfs diff=lfs merge=lfs -text
+audios/20240511-032437.wav filter=lfs diff=lfs merge=lfs -text
+audios/20240511-032620.wav filter=lfs diff=lfs merge=lfs -text
