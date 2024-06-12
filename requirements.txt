@@ -7,7 +7,7 @@ setuptools
 wheel
 httpx==0.24.1
 faiss-gpu
-fairseq @ git+https://github.com/cappuch/fairseq.git
+fairseq @ git+https://github.com/One-sixth/fairseq.git
 gradio==4.36.1
 ffmpeg-python
 praat-parselmouth
