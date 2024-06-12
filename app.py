@@ -7,7 +7,7 @@ from subprocess import Popen
 from typing import Any
 import faiss
 import spaces
-from random import 
+from random import shuffle
 import json, datetime, requests
 from gtts import gTTS
 now_dir = os.getcwd()
