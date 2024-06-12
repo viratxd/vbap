@@ -343,7 +343,7 @@ def vc_single(
         print(info)
         return info, (None, None)
 
-@spaces.gpu
+@spaces.GPU(duration=60 * 2)
 
 def vc_multi(
     sid,
