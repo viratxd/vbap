@@ -342,6 +342,7 @@ def vc_single(
         print(info)
         return info, (None, None)
 
+@spaces.gpu
 
 def vc_multi(
     sid,
