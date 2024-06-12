@@ -2110,5 +2110,5 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
                 "-------------------------------\n"
             )
                 
-    app.queue(concurrency_count=511, max_size=1022).launch(share=False, quiet=False)
-#endregion
+    app.launch(share=False, quiet=False, max_threads=1022)
+#endpain
