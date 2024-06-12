@@ -1558,7 +1558,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
                                 preview = gr.Textbox(label="Status:",interactive=False)
                                 face.upload(fn=success_message,inputs=[face], outputs=[preview, faces])
                             with gr.Row():
-                                animation = gr.Video(type='filepath')
+                                animation = gr.Video()
                                 refresh_button2.click(fn=change_choices2, inputs=[], outputs=[input_audio0, animation])
                             with gr.Row():
                                 animate_button = gr.Button('Animate')
