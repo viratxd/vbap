@@ -5,6 +5,7 @@ import threading
 from time import sleep
 from subprocess import Popen
 import faiss
+import spaces
 from random import shuffle
 import json, datetime, requests
 from gtts import gTTS
