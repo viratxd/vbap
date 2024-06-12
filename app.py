@@ -49,8 +49,6 @@ try:
 except (ValueError, TypeError, IndexError):
     DoFormant, Quefrency, Timbre = False, 1.0, 1.0
     CSVutil('csvdb/formanting.csv', 'w+', 'formanting', DoFormant, Quefrency, Timbre)
-    
-def expand_2d_or_3d_tensor(x: torch.Tensor, trg_dim: int, padding_idx: int):
 
 def download_models():
     # Download hubert base model if not present
