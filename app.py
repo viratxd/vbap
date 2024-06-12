@@ -1531,7 +1531,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
                             value="./audios/Test_Audio.mp3",
                             choices=audio_files
                             )
-                        dropbox.upload(fn=save_to_wav2, inputs=[dropbox], outputs=[input_audio0])
                         dropbox.upload(fn=change_choices2, inputs=[], outputs=[input_audio0])
                         refresh_button2 = gr.Button("Refresh", variant="primary", size='sm')
                         record_button.change(fn=save_to_wav, inputs=[record_button], outputs=[input_audio0])
