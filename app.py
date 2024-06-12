@@ -1525,7 +1525,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
                     with gr.Row():
                         dropbox = gr.File(label="Drag your audio file and click refresh.")
                     with gr.Row():
-                        record_button=gr.Audio(source="microphone", label="Or you can use your microphone!", type="filepath")
+                        record_button=gr.Audio(recording=True, label="Or you can use your microphone!", type="filepath")
+
                     with gr.Row():
                         input_audio0 = gr.Dropdown(
                             label="2.Choose the audio file.",
