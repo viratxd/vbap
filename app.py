@@ -245,6 +245,7 @@ def load_hubert():
     hubert_model = HuBERT(model_path)
     return hubert_model
 
+hubert_model = load_hubert()
 
 weight_root = "weights"
 index_root = "logs"
