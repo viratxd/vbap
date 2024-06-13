@@ -28,17 +28,7 @@ def use_fp32_config():
 
                 print(f"Set fp16_run to true in {config_file}")
 
-            with open(
-                "trainset_preprocess_pipeline_print.py", "r", encoding="utf-8"
-            ) as f:
-                strr = f.read()
-
-            strr = strr.replace("3.0", "3.7")
-
-            with open(
-                "trainset_preprocess_pipeline_print.py", "w", encoding="utf-8"
-            ) as f:
-                f.write(strr)
+            strr = None
         else:
             for config_file in ["32k.json", "40k.json", "48k.json"]:
                 with open(f"configs/{config_file}", "r") as f:
@@ -52,17 +42,7 @@ def use_fp32_config():
 
                 print(f"Set fp16_run to false in {config_file}")
 
-            with open(
-                "trainset_preprocess_pipeline_print.py", "r", encoding="utf-8"
-            ) as f:
-                strr = f.read()
-
-            strr = strr.replace("3.7", "3.0")
-
-            with open(
-                "trainset_preprocess_pipeline_print.py", "w", encoding="utf-8"
-            ) as f:
-                f.write(strr)
+            strr = None
     else:
         print(
             "CUDA is not available. Make sure you have an NVIDIA GPU and CUDA installed."
