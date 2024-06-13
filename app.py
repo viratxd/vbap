@@ -4,7 +4,6 @@ os.environ["no_proxy"] = "localhost, 127.0.0.1, ::1"
 import threading
 from time import sleep
 from subprocess import Popen
-from typing import Any
 import faiss
 import spaces
 from random import shuffle
@@ -195,7 +194,6 @@ else:
             or "M4" in gpu_name.upper()
             or "T4" in gpu_name.upper()
             or "TITAN" in gpu_name.upper()
-            or "ZERO" in gpu_name.upper()
         ):  # A10#A100#V100#A40#P40#M40#K80#A4500
             if_gpu_ok = True  # 至少有一张能用的N卡
             gpu_infos.append("%s\t%s" % (i, gpu_name))
@@ -222,31 +220,30 @@ from lib.infer_pack.models import (
     SynthesizerTrnMs768NSFsid_nono,
 )
 import soundfile as sf
-from fairseq import checkpoint_utils
 import gradio as gr
 import logging
 from vc_infer_pipeline import VC
 from config import Config
+import torch.nn as nn
+import numpy as np
 
 config = Config()
 # from trainset_preprocess_pipeline import PreProcess
 logging.getLogger("numba").setLevel(logging.WARNING)
 
-hubert_model = None
+
+class HuBERT(nn.Module):
+    def __init__(self, model_path):
+        super(HuBERT, self).__init__()
+        self.model = torch.hub.load('pytorch/fairseq', 'hubert_base') # should load without using hubert_base.pt, and without fairseq.
+
+    def extract_features(self, waveform):
+        return self.model.extract_features(waveform)
 
 def load_hubert():
-    global hubert_model
-    models, _, _ = checkpoint_utils.load_model_ensemble_and_task(
-        ["hubert_base.pt"],
-        suffix="",
-    )
-    hubert_model = models[0]
-    hubert_model = hubert_model.to(config.device)
-    if config.is_half:
-        hubert_model = hubert_model.half()
-    else:
-        hubert_model = hubert_model.float()
-    hubert_model.eval()
+    model_path = "hubert_base.pt"  # Your model path
+    hubert_model = HuBERT(model_path)
+    return hubert_model
 
 
 weight_root = "weights"
@@ -262,7 +259,7 @@ for root, dirs, files in os.walk(index_root, topdown=False):
             index_paths.append("%s/%s" % (root, name))
 
 
-@spaces.GPU
+
 def vc_single(
     sid,
     input_audio_path,
