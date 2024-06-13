@@ -195,6 +195,7 @@ else:
             or "M4" in gpu_name.upper()
             or "T4" in gpu_name.upper()
             or "TITAN" in gpu_name.upper()
+            or "ZERO" in gpu_name.upper()
         ):  # A10#A100#V100#A40#P40#M40#K80#A4500
             if_gpu_ok = True  # 至少有一张能用的N卡
             gpu_infos.append("%s\t%s" % (i, gpu_name))
@@ -261,7 +262,7 @@ for root, dirs, files in os.walk(index_root, topdown=False):
             index_paths.append("%s/%s" % (root, name))
 
 
-
+@spaces.GPU
 def vc_single(
     sid,
     input_audio_path,
