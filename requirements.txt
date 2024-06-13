@@ -7,7 +7,6 @@ setuptools
 wheel
 httpx==0.24.1
 faiss-gpu
-fairseq
 gradio==4.36.1
 ffmpeg-python
 praat-parselmouth
