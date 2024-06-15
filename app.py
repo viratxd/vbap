@@ -238,7 +238,7 @@ def upload_model(index_file, pth_file):
     index_file_ui.value = index_file
     return "Uploaded!"  
 
-with gr.Blocks(theme="Ilaria RVC") as demo:
+with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose"), title="Ilaria RVC 💖") as demo:
     gr.Markdown("## Ilaria RVC 💖")
     with gr.Tab("Inference"):
         sound_gui = gr.Audio(value=None,type="filepath",autoplay=False,visible=True,)
