@@ -2,7 +2,7 @@ import gradio as gr
 import requests
 import random
 import os
-import zipfile
+import zipfile 
 import librosa
 import time
 from infer_rvc_python import BaseLoader
@@ -11,7 +11,8 @@ from tts_voice import tts_order_voice
 import edge_tts
 import tempfile
 import anyio
-
+import asyncio
+from audio_separator.separator import Separator
 
 language_dict = tts_order_voice
 
@@ -25,6 +26,7 @@ async def text_to_speech_edge(text, language_code):
 
     return tmp_path
 
+# fucking dogshit toggle
 try:
     import spaces
     spaces_status = True
@@ -32,7 +34,7 @@ except ImportError:
     spaces_status = False
 
 separator = Separator()
-converter = BaseLoader(only_cpu=False, hubert_path=None, rmvpe_path=None) # <- yeah so like this handles rvc
+converter = BaseLoader(only_cpu=False, hubert_path=None, rmvpe_path=None) 
 
 global pth_file
 global index_file
@@ -50,55 +52,79 @@ PITCH_ALGO_OPT = [
     "rmvpe",
     "rmvpe+",
 ]
-UVR_5_MODELS = [
-    {"model_name": "BS-Roformer-Viperx-1297", "checkpoint": "model_bs_roformer_ep_317_sdr_12.9755.ckpt"},
-    {"model_name": "MDX23C-InstVoc HQ 2", "checkpoint": "MDX23C-8KFFT-InstVoc_HQ_2.ckpt"},
-    {"model_name": "Kim Vocal 2", "checkpoint": "Kim_Vocal_2.onnx"},
-    {"model_name": "5_HP-Karaoke", "checkpoint": "5_HP-Karaoke-UVR.pth"},
-    {"model_name": "UVR-DeNoise by FoxJoy", "checkpoint": "UVR-DeNoise.pth"},
-    {"model_name": "UVR-DeEcho-DeReverb by FoxJoy", "checkpoint": "UVR-DeEcho-DeReverb.pth"},
-]
 
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 def unzip_file(file):
-    filename = os.path.basename(file).split(".")[0]
+    filename = os.path.basename(file).split(".")[0] 
     with zipfile.ZipFile(file, 'r') as zip_ref:
-        zip_ref.extractall(os.path.join(TEMP_DIR, filename)) 
+        zip_ref.extractall(os.path.join(TEMP_DIR, filename))
     return True
-    
 
-def progress_bar(total, current): 
+def get_training_info(audio_file):
+    if audio_file is None:
+        return 'Please provide an audio file!'
+    duration = get_audio_duration(audio_file)
+    sample_rate = wave.open(audio_file, 'rb').getframerate()
+
+    training_info = {
+        (0, 2): (150, 'OV2'),
+        (2, 3): (200, 'OV2'),
+        (3, 5): (250, 'OV2'),
+        (5, 10): (300, 'Normal'),
+        (10, 25): (500, 'Normal'),
+        (25, 45): (700, 'Normal'),
+        (45, 60): (1000, 'Normal')
+    }
+
+    for (min_duration, max_duration), (epochs, pretrain) in training_info.items():
+        if min_duration <= duration < max_duration:
+            break
+    else:
+        return 'Duration is not within the specified range!'
+
+    return f'You should use the **{pretrain}** pretrain with **{epochs}** epochs at **{sample_rate/1000}khz** sample rate.'
+
+def on_button_click(audio_file_path):
+    return get_training_info(audio_file_path)
+
+def get_audio_duration(audio_file_path):
+    audio_info = sf.info(audio_file_path)
+    duration_minutes = audio_info.duration / 60
+    return duration_minutes
+
+def progress_bar(total, current): # best progress bar ever trust me sunglasses emoji 😎 
     return "[" + "=" * int(current / total * 20) + ">" + " " * (20 - int(current / total * 20)) + "] " + str(int(current / total * 100)) + "%"
 
 def download_from_url(url, filename=None):
     if "/blob/" in url:
-        url = url.replace("/blob/", "/resolve/") 
+        url = url.replace("/blob/", "/resolve/") # made it delik proof 😎
     if "huggingface" not in url:
         return ["The URL must be from huggingface", "Failed", "Failed"]
     if filename is None:
         filename = os.path.join(TEMP_DIR, MODEL_PREFIX + str(random.randint(1, 1000)) + ".zip")
     response = requests.get(url)
-    total = int(response.headers.get('content-length', 0)) 
+    total = int(response.headers.get('content-length', 0)) # bytes to download (length of the file)
     if total > 500000000:
 
         return ["The file is too large. You can only download files up to 500 MB in size.", "Failed", "Failed"]
     current = 0
     with open(filename, "wb") as f:
-        for data in response.iter_content(chunk_size=4096): 
+        for data in response.iter_content(chunk_size=4096):
             f.write(data)
             current += len(data)
             print(progress_bar(total, current), end="\r") 
     
 
+
     try:
         unzip_file(filename)
     except Exception as e:
-        return ["Failed to unzip the file", "Failed", "Failed"] 
-    unzipped_dir = os.path.join(TEMP_DIR, os.path.basename(filename).split(".")[0]) 
+        return ["Failed to unzip the file", "Failed", "Failed"]
+    unzipped_dir = os.path.join(TEMP_DIR, os.path.basename(filename).split(".")[0])
     pth_files = []
     index_files = []
-    for root, dirs, files in os.walk(unzipped_dir):
+    for root, dirs, files in os.walk(unzipped_dir): 
         for file in files:
             if file.endswith(".pth"):
                 pth_files.append(os.path.join(root, file))
@@ -158,7 +184,7 @@ def calculate_remaining_time(epochs, seconds_per_epoch):
     else:
         return f"{int(hours)} hours and {int(minutes)} minutes"
 
-def inf_handler(audio, model_name):
+def inf_handler(audio, model_name): 
     model_found = False
     for model_info in UVR_5_MODELS:
         if model_info["model_name"] == model_name:
