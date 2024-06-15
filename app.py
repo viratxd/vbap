@@ -2,7 +2,7 @@ import gradio as gr
 import requests
 import random
 import os
-import zipfile # built in module for unzipping files (thank god)
+import zipfile
 import librosa
 import time
 from infer_rvc_python import BaseLoader
@@ -11,12 +11,10 @@ from tts_voice import tts_order_voice
 import edge_tts
 import tempfile
 import anyio
-from audio_separator.separator import Separator
 
 
 language_dict = tts_order_voice
 
-# ilaria tts implementation :rofl:
 async def text_to_speech_edge(text, language_code):
     voice = language_dict[language_code]
     communicate = edge_tts.Communicate(text, voice)
@@ -27,7 +25,6 @@ async def text_to_speech_edge(text, language_code):
 
     return tmp_path
 
-# fucking dogshit toggle
 try:
     import spaces
     spaces_status = True
@@ -65,51 +62,50 @@ UVR_5_MODELS = [
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 def unzip_file(file):
-    filename = os.path.basename(file).split(".")[0] # converts "model.zip" to "model" so we can do things
+    filename = os.path.basename(file).split(".")[0]
     with zipfile.ZipFile(file, 'r') as zip_ref:
-        zip_ref.extractall(os.path.join(TEMP_DIR, filename)) # might not be very ram efficient...
+        zip_ref.extractall(os.path.join(TEMP_DIR, filename)) 
     return True
     
 
-def progress_bar(total, current): # best progress bar ever trust me sunglasses emoji 😎 
+def progress_bar(total, current): 
     return "[" + "=" * int(current / total * 20) + ">" + " " * (20 - int(current / total * 20)) + "] " + str(int(current / total * 100)) + "%"
 
 def download_from_url(url, filename=None):
     if "/blob/" in url:
-        url = url.replace("/blob/", "/resolve/") # made it delik proof 😎
+        url = url.replace("/blob/", "/resolve/") 
     if "huggingface" not in url:
         return ["The URL must be from huggingface", "Failed", "Failed"]
     if filename is None:
         filename = os.path.join(TEMP_DIR, MODEL_PREFIX + str(random.randint(1, 1000)) + ".zip")
     response = requests.get(url)
-    total = int(response.headers.get('content-length', 0)) # bytes to download (length of the file)
+    total = int(response.headers.get('content-length', 0)) 
     if total > 500000000:
 
         return ["The file is too large. You can only download files up to 500 MB in size.", "Failed", "Failed"]
     current = 0
     with open(filename, "wb") as f:
-        for data in response.iter_content(chunk_size=4096): # download in chunks of 4096 bytes (4kb - helps with memory usage and speed)
+        for data in response.iter_content(chunk_size=4096): 
             f.write(data)
             current += len(data)
-            print(progress_bar(total, current), end="\r") # \r is a carriage return, it moves the cursor to the start of the line so its like tqdm sunglasses emoji 😎
+            print(progress_bar(total, current), end="\r") 
     
-    # unzip because the model is in a zip file lel
 
     try:
         unzip_file(filename)
     except Exception as e:
-        return ["Failed to unzip the file", "Failed", "Failed"] # return early if it fails and like tell the user but its dogshit hahahahahahaha 😎 According to all known laws aviation, there is no way a bee should be able to fly.
-    unzipped_dir = os.path.join(TEMP_DIR, os.path.basename(filename).split(".")[0]) # just do what we did in unzip_file because we need the directory
+        return ["Failed to unzip the file", "Failed", "Failed"] 
+    unzipped_dir = os.path.join(TEMP_DIR, os.path.basename(filename).split(".")[0]) 
     pth_files = []
     index_files = []
-    for root, dirs, files in os.walk(unzipped_dir): # could be done more efficiently because nobody stores models in subdirectories but like who cares (it's a futureproofing thing lel)
+    for root, dirs, files in os.walk(unzipped_dir):
         for file in files:
             if file.endswith(".pth"):
                 pth_files.append(os.path.join(root, file))
             elif file.endswith(".index"):
                 index_files.append(os.path.join(root, file))
     
-    print(pth_files, index_files) # debug print because im fucking stupid and i need to see what is going on
+    print(pth_files, index_files) 
     global pth_file
     global index_file
     pth_file = pth_files[0]
@@ -162,7 +158,7 @@ def calculate_remaining_time(epochs, seconds_per_epoch):
     else:
         return f"{int(hours)} hours and {int(minutes)} minutes"
 
-def inf_handler(audio, model_name): # its a shame that zerogpu just WONT cooperate with us
+def inf_handler(audio, model_name):
     model_found = False
     for model_info in UVR_5_MODELS:
         if model_info["model_name"] == model_name:
@@ -241,22 +237,31 @@ def upload_model(index_file, pth_file):
 with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose"), title="Ilaria RVC 💖") as demo:
     gr.Markdown("## Ilaria RVC 💖")
     with gr.Tab("Inference"):
-        sound_gui = gr.Audio(value=None,type="filepath",autoplay=False,visible=True,)
-        pth_file_ui = gr.Textbox(label="Model pth file",value=pth_file,visible=False,interactive=False,)
-        index_file_ui = gr.Textbox(label="Index pth file",value=index_file,visible=False,interactive=False,)
-
+        sound_gui = gr.Audio(value=None, type="filepath", autoplay=False, visible=True)
+        pth_file_ui = gr.Textbox(label="Model pth file", value=pth_file, visible=False, interactive=False)
+        index_file_ui = gr.Textbox(label="Index pth file", value=index_file, visible=False, interactive=False)
+    
+        with gr.Accordion("Ilaria TTS", open=False):
+            text_tts = gr.Textbox(label="Text", placeholder="Hello!", lines=3, interactive=True)
+            dropdown_tts = gr.Dropdown(label="Language and Model", choices=list(language_dict.keys()), interactive=True, value=list(language_dict.keys())[0])
+    
+            button_tts = gr.Button("Speak", variant="primary")
+    
+            # Rimuovi l'output_tts e usa solo sound_gui come output
+            button_tts.click(text_to_speech_edge, inputs=[text_tts, dropdown_tts], outputs=sound_gui)
+            
         with gr.Accordion("Settings", open=False):
-            pitch_algo_conf = gr.Dropdown(PITCH_ALGO_OPT,value=PITCH_ALGO_OPT[4],label="Pitch algorithm",visible=True,interactive=True,)
-            pitch_lvl_conf = gr.Slider(label="Pitch level (lower -> 'male' while higher -> 'female')",minimum=-24,maximum=24,step=1,value=0,visible=True,interactive=True,)
-            index_inf_conf =  gr.Slider(minimum=0,maximum=1,label="Index influence -> How much accent is applied",value=0.75,)
-            respiration_filter_conf = gr.Slider(minimum=0,maximum=7,label="Respiration median filtering",value=3,step=1,interactive=True,)
-            envelope_ratio_conf = gr.Slider(minimum=0,maximum=1,label="Envelope ratio",value=0.25,interactive=True,)
-            consonant_protec_conf = gr.Slider(minimum=0,maximum=0.5,label="Consonant breath protection",value=0.5,interactive=True,)
-
-        button_conf = gr.Button("Convert",variant="primary",)
-        output_conf = gr.Audio(type="filepath",label="Output",)
-    	
-        button_conf.click(lambda :None, None, output_conf)
+            pitch_algo_conf = gr.Dropdown(PITCH_ALGO_OPT, value=PITCH_ALGO_OPT[4], label="Pitch algorithm", visible=True, interactive=True)
+            pitch_lvl_conf = gr.Slider(label="Pitch level (lower -> 'male' while higher -> 'female')", minimum=-24, maximum=24, step=1, value=0, visible=True, interactive=True)
+            index_inf_conf = gr.Slider(minimum=0, maximum=1, label="Index influence -> How much accent is applied", value=0.75)
+            respiration_filter_conf = gr.Slider(minimum=0, maximum=7, label="Respiration median filtering", value=3, step=1, interactive=True)
+            envelope_ratio_conf = gr.Slider(minimum=0, maximum=1, label="Envelope ratio", value=0.25, interactive=True)
+            consonant_protec_conf = gr.Slider(minimum=0, maximum=0.5, label="Consonant breath protection", value=0.5, interactive=True)
+    
+        button_conf = gr.Button("Convert", variant="primary")
+        output_conf = gr.Audio(type="filepath", label="Output")
+        
+        button_conf.click(lambda: None, None, output_conf)
         button_conf.click(
             run,
             inputs=[
@@ -270,17 +275,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
             ],
             outputs=[output_conf],
         )
-    
-    with gr.Tab("Ilaria TTS"):
-            text_tts = gr.Textbox(label="Text", placeholder="Hello!", lines=3, interactive=True,)
-            dropdown_tts = gr.Dropdown(label="Language and Model",choices=list(language_dict.keys()),interactive=True, value=list(language_dict.keys())[0])
-
-            button_tts = gr.Button("Speak", variant="primary",)
-
-            output_tts = gr.Audio(type="filepath", label="Output",)
-
-            button_tts.click(text_to_speech_edge, inputs=[text_tts, dropdown_tts], outputs=[output_tts])
-
 
     with gr.Tab("Model Loader (Download and Upload)"):
         with gr.Accordion("Model Downloader", open=False):
@@ -301,20 +295,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
 
             upload_button.click(upload_model, [index_file_upload, pth_file_upload], upload_status)
     
-
-    with gr.Tab("Vocal Separator (UVR)"):
-        gr.Markdown("Separate vocals and instruments from an audio file using UVR models. - This is only on CPU due to ZeroGPU being ZeroGPU :(")
-        uvr5_audio_file = gr.Audio(label="Audio File",type="filepath")
-
-        with gr.Row():
-            uvr5_model = gr.Dropdown(label="Model", choices=[model["model_name"] for model in UVR_5_MODELS])
-            uvr5_button = gr.Button("Separate Vocals", variant="primary",)
-
-        uvr5_output_voc = gr.Audio(type="filepath", label="Output 1",) # UVR models sometimes output it in a weird way where it's like the positions swap randomly, so let's just call them Outputs lol
-        uvr5_output_inst = gr.Audio(type="filepath", label="Output 2",)
-
-        uvr5_button.click(inference, [uvr5_audio_file, uvr5_model], [uvr5_output_voc, uvr5_output_inst])
-    
     with gr.Tab("Extra"):
         with gr.Accordion("Training Time Calculator", open=False):
             with gr.Column():
@@ -328,15 +308,18 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
                     inputs=[epochs_input, seconds_input],
                     outputs=[remaining_time_output]
                 )
-
-        with gr.Accordion("Model Fusion", open=False):
-            gr.Markdown(value="Fusion of two models to create a new model - coming soon! 😎")
-
-        with gr.Accordion("Model Quantization", open=False):
-            gr.Markdown(value="Quantization of a model to reduce its size - coming soon! 😎")
         
-        with gr.Accordion("Training Helper", open=False):
-            gr.Markdown(value="Help for training models - coming soon! 😎")
+        with gr.Accordion('Training Helper', open=False):
+            with gr.Column():
+                 audio_input = gr.Audio(type="filepath", label="Upload your audio file")
+                 gr.Text("Please note that these results are approximate and intended to provide a general idea for beginners.", label='Notice:')
+                 training_info_output = gr.Markdown(label="Training Information:")
+                 get_info_button = gr.Button("Get Training Info")
+                 get_info_button.click(
+                  fn=on_button_click,
+                  inputs=[audio_input],
+                  outputs=[training_info_output]
+                )
 
     with gr.Tab("Credits"):
         gr.Markdown(
@@ -351,4 +334,4 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
             """
         )
 
-demo.queue(api_open=False).launch(show_api=False) # idk ilaria if you want or dont want to
+demo.queue(api_open=False).launch(show_api=False)
