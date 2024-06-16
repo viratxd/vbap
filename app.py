@@ -34,7 +34,7 @@ except ImportError:
     spaces_status = False
 
 separator = Separator()
-converter = BaseLoader(only_cpu=False, hubert_path=None, rmvpe_path=None) # <- yeah so like this handles rvc
+converter = BaseLoader(only_cpu=False, hubert_path=None, rmvpe_path=None)
 
 global pth_file
 global index_file
@@ -500,5 +500,9 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
             ## In loving memory of JLabDX 🕊️
             """
         )
+    with gr.Tab(("")):
+        gr.Markdown('''
+            ![ilaria](https://i.ytimg.com/vi/5PWqt2Wg-us/maxresdefault.jpg)
+        ''')
 
-demo.queue(api_open=False).launch(show_api=False) # idk ilaria if you want or dont want to
+demo.queue(api_open=False).launch(show_api=False)
