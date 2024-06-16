@@ -8,3 +8,6 @@ audio-separator[gpu]
 scipy
 onnxruntime-gpu
 samplerate
+transformers
+psutil
+py-cpuinfo
