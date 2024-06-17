@@ -121,6 +121,9 @@ def download_from_url(url, name=None):
     print(pth_file)
     print(index_file)
 
+    if name == "":
+        name = pth_file.split(".")[0]
+
     MODELS.append({"model": pth_file, "index": index_file, "model_name": name})
     return ["Downloaded as " + name, pth_files[0], index_files[0]]
 
