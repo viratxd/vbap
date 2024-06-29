@@ -17,7 +17,11 @@ You may not distribute or sell the Software, or any derivative works based on th
 
 ## 4. Commercial Use
 
-Commercial use of the Software is strictly prohibited without the express written consent of Ilaria. Small businesses may be granted permission to use the Software for profit, but large corporations must negotiate a commercial agreement with Ilaria. Unauthorized commercial use is strictly prohibited and will result in the termination of this license.
+The use of the Software for commercial purposes, including any form of paid software support, is strictly forbidden without the explicit written approval of Ilaria. This applies to both profit-driven businesses and non-profit organizations that handle monetary transactions. Small businesses may be considered for permission to utilize the Software for profit under strict conditions. However, large corporations are required to engage in stringent negotiations with Ilaria to secure a commercial agreement.
+
+Ilaria may agree to a predetermined or subsequently decided percentage of the profits. Ilaria maintains an upper hand in all such negotiations and reserves any rights, including the right to terminate the contract at any time.
+
+Any unauthorized commercial use is strictly prohibited and will lead to immediate termination of this license. In the event of a breach of these terms, Ilaria reserves the right to pursue legal remedies. This may result in litigation, and the offending party may be held liable for any damages incurred. Please be aware that non-compliance with these terms is a serious matter and could have significant legal consequences.
 
 ## 5. Forking and Personal Use
 
