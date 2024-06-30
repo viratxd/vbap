@@ -76,6 +76,20 @@ def unzip_file(file):
 def progress_bar(total, current):
     return "[" + "=" * int(current / total * 20) + ">" + " " * (20 - int(current / total * 20)) + "] " + str(int(current / total * 100)) + "%"
 
+def contains_bad_word(text, bad_words):
+    text_lower = text.lower()
+    for word in bad_words:
+        if word.lower() in text_lower:
+            return True
+    return False
+
+bad_words = ['puttana', 'whore', 'badword3', 'badword4']
+
+class BadWordError(Exception):
+    def __init__(self, msg):
+        super().__init__(msg)
+        self.word = word
+
 def download_from_url(url, name=None):
     if name is None:
         raise ValueError("The model name must be provided")
@@ -84,6 +98,8 @@ def download_from_url(url, name=None):
     if "huggingface" not in url:
         return ["The URL must be from huggingface", "Failed", "Failed"]
     filename = os.path.join(TEMP_DIR, MODEL_PREFIX + str(random.randint(1, 1000)) + ".zip")
+    if contains_bad_word(url, bad_words):
+        return BadWordError("The filename has a bad word.")
     response = requests.get(url)
     total = int(response.headers.get('content-length', 0)) 
     if total > 500000000:
