@@ -97,9 +97,11 @@ def download_from_url(url, name=None):
         url = url.replace("/blob/", "/resolve/") 
     if "huggingface" not in url:
         return ["The URL must be from huggingface", "Failed", "Failed"]
-    filename = os.path.join(TEMP_DIR, MODEL_PREFIX + str(random.randint(1, 1000)) + ".zip")
     if contains_bad_word(url, bad_words):
-        return BadWordError("The filename has a bad word.")
+        return BadWordError("The file url has a bad word.")
+    if contains_bad_word(name, bad_words):
+        return BadWordError("The file name has a bad word.")
+    filename = os.path.join(TEMP_DIR, MODEL_PREFIX + str(random.randint(1, 1000)) + ".zip")
     response = requests.get(url)
     total = int(response.headers.get('content-length', 0)) 
     if total > 500000000:
