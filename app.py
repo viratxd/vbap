@@ -276,6 +276,7 @@ def upload_model(index_file, pth_file, model_name):
 
 with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose"), title="Ilaria RVC 💖") as app:
     gr.Markdown("## Ilaria RVC 💖")
+    gr.Markdown("**Help keeping up the GPU donating on [Ko-Fi](https://ko-fi.com/ilariaowo)**")
     with gr.Tab("Inference"):
         sound_gui = gr.Audio(value=None,type="filepath",autoplay=False,visible=True,)
         def update():
