@@ -274,7 +274,7 @@ def upload_model(index_file, pth_file, model_name):
     MODELS.append({"model": pth_file, "index": index_file, "model_name": model_name})
     return "Uploaded!"  
 
-with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose"), title="Ilaria RVC 💖") as demo:
+with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose"), title="Ilaria RVC 💖") as app:
     gr.Markdown("## Ilaria RVC 💖")
     with gr.Tab("Inference"):
         sound_gui = gr.Audio(value=None,type="filepath",autoplay=False,visible=True,)
@@ -526,4 +526,4 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="pink", secondary_hue="rose")
             ![ilaria](https://i.ytimg.com/vi/5PWqt2Wg-us/maxresdefault.jpg)
         ''')
 
-demo.queue(api_open=False).launch(show_api=False)
+app.queue(api_open=False).launch(show_api=False)
